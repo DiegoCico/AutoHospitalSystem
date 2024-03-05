@@ -15,16 +15,22 @@ public class Room {
         isUsed = used;
         canVisit = visit;
         doctor = (doc != null && !doc.isEmpty()) ? doc : DEFAULT_DOCTOR;
-        this.patient = patient; // Assuming it's okay to have a null patient
+        this.patient = patient;
     }
 
-    public void admitPatient(Patient patient, String doctor) {
+    public void admitPatient(Patient patient) {
         if (this.isUsed) {
             throw new IllegalStateException("Room is already in use.");
         }
         setPatient(patient);
-        setDoctor(doctor);
         setIsUsed(true);
+        setCanVisit(false);
+    }
+
+    public void clearRoom(){
+        setPatient(null);
+        setDoctor(DEFAULT_DOCTOR);
+        setIsUsed(false);
     }
 
     public void setDoctor(String doctor) {
