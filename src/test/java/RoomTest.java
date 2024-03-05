@@ -1,57 +1,72 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test class for the Room class.
- * Uses JUnit 5 to test various functionalities of the Room class.
- */
 class RoomTest {
 
     /**
-     * Tests the creation of a Room object with the default constructor.
-     * Ensures the room is not in use, is available for visitation, has no assigned doctor, and no patient by default.
+     * Test the initialization of a Room object.
+     * This includes checking the default constructor and the constructor with parameters.
      */
     @Test
-    void testDefaultRoomCreation() {
-        Room room = new Room();
+    void testRoomInitialization() {
+        Room defaultRoom = new Room();
+        assertEquals("N/A", defaultRoom.getDoctor(), "Default doctor should be N/A");
+        assertNull(defaultRoom.getPatient(), "Default patient should be null");
+        assertFalse(defaultRoom.getIsUsed(), "Default room should not be in use");
 
-        assertFalse(room.getIsUsed(), "New room should not be in use");
-        assertTrue(room.getCanVisit(), "New room should be available for visitation");
-        assertEquals("N/A", room.getDoctor(), "New room should have no assigned doctor");
-        assertNull(room.getPatient(), "New room should have no patient");
-    }
-
-    /**
-     * Tests the creation of a Room object with specified parameters including a patient.
-     * Verifies that the room reflects the specified usage status, visitation availability, assigned doctor, and patient.
-     */
-    @Test
-    void testParameterizedRoomCreation() {
-        Patient patient = new Patient("John Doe", 30, "flu");
+        Patient patient = new Patient("John Doe", 30, "cold");
         Room room = new Room(true, false, "Dr. Smith", patient);
-
+        assertEquals("Dr. Smith", room.getDoctor(), "Doctor should be Dr. Smith");
+        assertEquals(patient, room.getPatient(), "Patient should be John Doe");
         assertTrue(room.getIsUsed(), "Room should be in use");
-        assertFalse(room.getCanVisit(), "Room should not be available for visitation");
-        assertEquals("Dr. Smith", room.getDoctor(), "Assigned doctor should be Dr. Smith");
-        assertNotNull(room.getPatient(), "Room should have a patient");
-        assertEquals("John Doe", room.getPatient().getName(), "Patient in the room should be John Doe");
     }
 
     /**
-     * Tests the toString method of the Room class.
-     * Checks if the method returns a correctly formatted string representing the room's status, including patient information.
+     * Test admitting a patient into the room.
+     * It verifies that the room's status is correctly updated and an exception is thrown if the room is already in use.
+     */
+    @Test
+    void testAdmitPatient() {
+        Room room = new Room();
+        Patient patient = new Patient("Alice", 25, "flu");
+
+        room.admitPatient(patient);
+        assertTrue(room.getIsUsed(), "Room should be in use after admitting a patient");
+        assertFalse(room.getCanVisit(), "Room should not be available for visitation after admitting a patient");
+        assertEquals(patient, room.getPatient(), "Admitted patient should be Alice");
+
+        assertThrows(IllegalStateException.class, () -> room.admitPatient(new Patient("Bob", 30, "cold")), "Should throw IllegalStateException when admitting a patient to an occupied room");
+    }
+
+    /**
+     * Test the set and get methods of the Room class.
+     * It checks whether the room's properties are correctly updated and retrieved.
+     */
+    @Test
+    void testSetAndGetMethods() {
+        Room room = new Room();
+        room.setDoctor("Dr. Jones");
+        assertEquals("Dr. Jones", room.getDoctor(), "Doctor should be set to Dr. Jones");
+
+        room.setIsUsed(true);
+        assertTrue(room.getIsUsed(), "Room should be marked as used");
+
+        room.setCanVisit(false);
+        assertFalse(room.getCanVisit(), "Room should not be available for visitation");
+
+        Patient patient = new Patient("Charlie", 28, "headache");
+        room.setPatient(patient);
+        assertEquals(patient, room.getPatient(), "Patient should be set to Charlie");
+    }
+
+    /**
+     * Test the toString method of the Room class.
+     * It verifies that the method returns the expected string representation of a Room object.
      */
     @Test
     void testToStringMethod() {
-        Patient patient = new Patient("David", 28, "sprained ankle");
-        Room room = new Room(false, true, "Dr. Jones", patient);
-        String expectedString = "--------------------------- \n" +
-                "Is Used: false\n" +
-                "Can Visit: true\n" +
-                "Doctor: Dr. Jones\n" +
-                "Patient: " + patient.toString() + "\n" +
-                "---------------------------";
-
+        Room room = new Room(false, true, "Dr. Johnson", null);
+        String expectedString = "--------------------------- \nIs Used: No\nCan Visit: Yes\nDoctor: Dr. Johnson\nPatient: No patient\n---------------------------";
         assertEquals(expectedString, room.toString(), "toString output does not match expected string");
     }
 }

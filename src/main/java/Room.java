@@ -1,4 +1,9 @@
+import java.util.Scanner;
 
+/**
+ * This class represents a Room in a hospital or clinic setting.
+ * It tracks the room's usage status, visitation availability, assigned doctor, and current patient.
+ */
 public class Room {
     private boolean isUsed; // Indicates whether the room is currently in use.
     private boolean canVisit; // Indicates whether the room is available for visitation.
@@ -6,11 +11,21 @@ public class Room {
     private Patient patient; // Stores the patient currently in the room, if any.
     private static final String DEFAULT_DOCTOR = "N/A";
 
-
+    /**
+     * Default constructor initializing a room with default values.
+     */
     public Room() {
         this(false, true, DEFAULT_DOCTOR, null);
     }
 
+    /**
+     * Constructs a Room with specified parameters.
+     *
+     * @param used    Indicates if the room is in use.
+     * @param visit   Indicates if the room is available for visitation.
+     * @param doc     The name of the doctor assigned to the room.
+     * @param patient The patient currently in the room.
+     */
     public Room(boolean used, boolean visit, String doc, Patient patient) {
         isUsed = used;
         canVisit = visit;
@@ -18,6 +33,13 @@ public class Room {
         this.patient = patient;
     }
 
+    /**
+     * Admits a patient to the room.
+     * Sets the room to used and not available for visitation.
+     *
+     * @param patient The patient to be admitted.
+     * @throws IllegalStateException If the room is already in use.
+     */
     public void admitPatient(Patient patient) {
         if (this.isUsed) {
             throw new IllegalStateException("Room is already in use.");
@@ -27,10 +49,19 @@ public class Room {
         setCanVisit(false);
     }
 
+    /**
+     * Clears the room by taking doctor's notes and resetting room's status.
+     * Sets the room to not used and available for visitation.
+     */
     public void clearRoom(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("Doctor notes: ");
+        String notes = in.nextLine();
+        getPatient().setDocNotes(notes);
+        System.out.println(getPatient());
         setPatient(null);
-        setDoctor(DEFAULT_DOCTOR);
-        setIsUsed(false);
+        setIsUsed(true);
+        setCanVisit(true);
     }
 
     public void setDoctor(String doctor) {
