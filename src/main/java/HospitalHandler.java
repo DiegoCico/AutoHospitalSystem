@@ -147,6 +147,8 @@ public class HospitalHandler {
 
     public ArrayList<Patient> getWaitlist(){ return waitlist; }
     public ArrayList<Room> getRooms() { return rooms; }
+    public Room getSpecificRoom(int roomNumber) { return rooms.get(--roomNumber);}
+    public void addRooms() { rooms.add(new Room()); }
     public ArrayList<String> getDoctors() { return doctors; }
     public void setDoctors(ArrayList<String> doc) { doctors = doc; }
 
