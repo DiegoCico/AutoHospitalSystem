@@ -51,7 +51,7 @@ public class App {
                     while (true) {
                         System.out.print("Enter doctor's name: ");
                         String docName = in.next();
-                        if (docName.equalsIgnoreCase("DONE")) {
+                        if ("DONE".equalsIgnoreCase(docName)) {
                             break;
                         }
                         doctors.add(docName);
